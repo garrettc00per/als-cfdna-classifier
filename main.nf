@@ -165,6 +165,7 @@ process COMBINE_ALL_FEATURES {
     path(insert_summary)
     path(meth_summary)
     path(motif_features)
+    path(position_summary)
     path(metadata)
     
     output:
@@ -172,15 +173,32 @@ process COMBINE_ALL_FEATURES {
     
     script:
     """
-    ${projectDir}/bin/combine_all_features.py ${insert_summary} ${meth_summary} ${motif_features} ${metadata} all_features_combined.csv
+    ${projectDir}/bin/combine_all_features.py ${insert_summary} ${meth_summary} ${motif_features} ${position_summary} ${metadata} all_features_combined.csv
     """
 }
 
-process CLASSIFY {
+process FEATURE_SELECTION {
     publishDir "${params.outdir}", mode: 'copy'
     
     input:
     path(features)
+    
+    output:
+    path("feature_selection_results.csv")
+    path("best_features.json")
+    
+    script:
+    """
+    ${projectDir}/bin/feature_selection.py ${features} feature_selection_results.csv best_features.json
+    """
+}
+
+process CLASSIFY_BEST {
+    publishDir "${params.outdir}", mode: 'copy'
+    
+    input:
+    path(features)
+    path(best_features)
     
     output:
     path("classification_results.csv")
@@ -188,7 +206,7 @@ process CLASSIFY {
     
     script:
     """
-    ${projectDir}/bin/classify_combined.py ${features} classification_results.csv > classification_output.txt
+    ${projectDir}/bin/classify_best_features.py ${features} ${best_features} classification_results.csv classification_output.txt
     """
 }
 
@@ -221,7 +239,6 @@ process VISUALIZE_POSITIONS {
     
     script:
     """
-    # Create temporary directory with all position files
     mkdir -p positions
     cp ${position_bins} positions/
     cp ${position_summary} positions/
@@ -267,23 +284,28 @@ workflow {
     // Load metadata
     metadata_ch = Channel.fromPath(params.metadata)
     
-    // Combine ALL features with disease labels (now including positions!)
+    // Combine ALL features with disease labels (INCLUDING POSITIONS)
     all_features_ch = COMBINE_ALL_FEATURES(
         insert_summary_ch,
         meth_summary_ch,
         motif_features_ch,
+        pos_summary_ch,
         metadata_ch
     )
     
-    // Run classification
-    classification_ch = CLASSIFY(all_features_ch)
+    // Feature selection - test all combinations
+    feature_selection_ch = FEATURE_SELECTION(all_features_ch)
+    
+    // Classify with best features
+    CLASSIFY_BEST(all_features_ch, feature_selection_ch[1])
     
     // Create visualizations
     VISUALIZE(all_features_ch)
-
+    
     // Create position distribution plots
+    position_bins_ch = positions_ch.map { it[1] }.collect()
     VISUALIZE_POSITIONS(
-        positions_ch.map { it[1] }.collect(),
+        position_bins_ch,
         pos_summary_ch,
         metadata_ch
     )

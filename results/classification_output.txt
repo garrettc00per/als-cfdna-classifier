@@ -2,55 +2,53 @@ Dataset: 22 samples
   ALS: 12 samples
   Control: 10 samples
 
-Total features: 56
+Feature Combination: Insert Size Only
+Total features: 8
 
 ============================================================
 Logistic Regression
 ============================================================
-Accuracy:    0.591
-Precision:   0.636
-Sensitivity: 0.583
-F1-Score:    0.609
-
-Confusion Matrix:
-              Predicted
-              Control  ALS
-Actual Control     6      4
-       ALS         5      7
-
-Classification Report:
-              precision    recall  f1-score   support
-
-     Control       0.55      0.60      0.57        10
-         ALS       0.64      0.58      0.61        12
-
-    accuracy                           0.59        22
-   macro avg       0.59      0.59      0.59        22
-weighted avg       0.60      0.59      0.59        22
-
-============================================================
-Random Forest
-============================================================
-Accuracy:    0.727
-Precision:   0.714
+Accuracy:    0.773
+Precision:   0.769
 Sensitivity: 0.833
-F1-Score:    0.769
+F1-Score:    0.800
 
 Confusion Matrix:
               Predicted
               Control  ALS
-Actual Control     6      4
+Actual Control     7      3
        ALS         2     10
 
 Classification Report:
               precision    recall  f1-score   support
 
-     Control       0.75      0.60      0.67        10
-         ALS       0.71      0.83      0.77        12
+     Control       0.78      0.70      0.74        10
+         ALS       0.77      0.83      0.80        12
 
-    accuracy                           0.73        22
-   macro avg       0.73      0.72      0.72        22
-weighted avg       0.73      0.73      0.72        22
+    accuracy                           0.77        22
+   macro avg       0.77      0.77      0.77        22
+weighted avg       0.77      0.77      0.77        22
 
+============================================================
+Random Forest
+============================================================
+Accuracy:    0.636
+Precision:   0.700
+Sensitivity: 0.583
+F1-Score:    0.636
 
-Results saved to: classification_results.csv
+Confusion Matrix:
+              Predicted
+              Control  ALS
+Actual Control     7      3
+       ALS         5      7
+
+Classification Report:
+              precision    recall  f1-score   support
+
+     Control       0.58      0.70      0.64        10
+         ALS       0.70      0.58      0.64        12
+
+    accuracy                           0.64        22
+   macro avg       0.64      0.64      0.64        22
+weighted avg       0.65      0.64      0.64        22
