@@ -39,6 +39,65 @@ ls results/
 
 ---
 
+## Setup & Installation (Amazon Linux 2)
+
+If you're setting up on a fresh AWS EC2 instance, follow these steps:
+
+### 1. Install Git
+```bash
+sudo yum install -y git
+git --version  # Verify
+```
+
+### 2. Install Java 17 (Required)
+```bash
+sudo yum install -y java-17-amazon-corretto-devel
+java -version  # Should show Java 17
+```
+
+### 3. Install Miniconda
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
+rm Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
+```
+
+### 4. Set Up Environment (Add to ~/.bashrc)
+```bash
+cat >> ~/.bashrc << 'EOF'
+export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
+export PATH=$JAVA_HOME/bin:~/miniconda3/bin:$PATH
+EOF
+source ~/.bashrc
+```
+
+### 5. Install Nextflow
+```bash
+curl -s https://get.nextflow.io | bash
+chmod +x nextflow
+sudo mv nextflow /usr/local/bin/
+```
+
+### 6. Install Python Dependencies
+```bash
+~/miniconda3/bin/pip install matplotlib seaborn scipy scikit-learn pandas numpy
+```
+
+### 7. Clone and Run
+```bash
+git clone https://github.com/YOUR-USERNAME/celfie-analysis.git
+cd celfie-analysis
+nextflow run main.nf
+```
+
+### Troubleshooting
+- **Java not found:** Ensure `JAVA_HOME` is set correctly: `echo $JAVA_HOME`
+- **Python packages not found:** Use `~/miniconda3/bin/pip install` instead of plain `pip`
+- **Network errors (handshake_failure):** Check AWS Security Group allows outbound HTTPS (port 443)
+
+---
+
 ## Summary of Results
 
 **Best Performance: 77.3% accuracy (Logistic Regression, Insert Size Features Only)**
