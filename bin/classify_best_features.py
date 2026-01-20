@@ -5,6 +5,7 @@ Train final classifier using only the best feature combination
 import sys
 import pandas as pd
 import numpy as np
+import random
 import json
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -12,6 +13,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_predict, StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.metrics import confusion_matrix, classification_report
+
+# Set random seeds for reproducibility
+RANDOM_SEED = 42
+np.random.seed(RANDOM_SEED)
+random.seed(RANDOM_SEED)
 
 def main(features_file, best_features_file, output_file, output_txt):
     # Load data
@@ -24,6 +30,7 @@ def main(features_file, best_features_file, output_file, output_txt):
     features = best_config['features']
     combination = best_config['combination']
     
+    print(f"Random Seed: {RANDOM_SEED}")
     print(f"Using best feature combination: {combination}")
     print(f"Number of features: {len(features)}")
     print()
@@ -36,14 +43,15 @@ def main(features_file, best_features_file, output_file, output_txt):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
-    # Train both models
+    # Train both models with explicit random seed
     classifiers = {
-        'Logistic Regression': LogisticRegression(random_state=42, max_iter=1000),
-        'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5)
+        'Logistic Regression': LogisticRegression(random_state=RANDOM_SEED, max_iter=1000),
+        'Random Forest': RandomForestClassifier(n_estimators=100, random_state=RANDOM_SEED, max_depth=5)
     }
     
     results = []
     output_lines = []
+    output_lines.append(f"Random Seed: {RANDOM_SEED}")
     output_lines.append(f"Dataset: {len(df)} samples")
     output_lines.append(f"  ALS: {sum(y)} samples")
     output_lines.append(f"  Control: {len(y) - sum(y)} samples")
@@ -55,7 +63,7 @@ def main(features_file, best_features_file, output_file, output_txt):
         output_lines.append(f"{name}")
         output_lines.append(f"{'='*60}")
         
-        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_SEED)
         y_pred = cross_val_predict(clf, X_scaled, y, cv=cv)
         
         accuracy = accuracy_score(y, y_pred)

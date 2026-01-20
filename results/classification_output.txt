@@ -1,3 +1,4 @@
+Random Seed: 42
 Dataset: 22 samples
   ALS: 12 samples
   Control: 10 samples
@@ -32,23 +33,23 @@ weighted avg       0.77      0.77      0.77        22
 ============================================================
 Random Forest
 ============================================================
-Accuracy:    0.636
-Precision:   0.700
+Accuracy:    0.682
+Precision:   0.778
 Sensitivity: 0.583
-F1-Score:    0.636
+F1-Score:    0.667
 
 Confusion Matrix:
               Predicted
               Control  ALS
-Actual Control     7      3
+Actual Control     8      2
        ALS         5      7
 
 Classification Report:
               precision    recall  f1-score   support
 
-     Control       0.58      0.70      0.64        10
-         ALS       0.70      0.58      0.64        12
+     Control       0.62      0.80      0.70        10
+         ALS       0.78      0.58      0.67        12
 
-    accuracy                           0.64        22
-   macro avg       0.64      0.64      0.64        22
-weighted avg       0.65      0.64      0.64        22
+    accuracy                           0.68        22
+   macro avg       0.70      0.69      0.68        22
+weighted avg       0.70      0.68      0.68        22

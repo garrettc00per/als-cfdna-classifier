@@ -5,11 +5,17 @@ Test different feature combinations and select the best
 import sys
 import pandas as pd
 import numpy as np
+import random
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 import json
+
+# Set random seeds for reproducibility
+RANDOM_SEED = 42
+np.random.seed(RANDOM_SEED)
+random.seed(RANDOM_SEED)
 
 def main(features_file, output_file, best_features_file):
     # Load data
@@ -32,6 +38,7 @@ def main(features_file, output_file, best_features_file):
     print("=" * 70)
     print("FEATURE COMBINATION TESTING")
     print("=" * 70)
+    print(f"Random Seed: {RANDOM_SEED}")
     print(f"Dataset: {len(df)} samples ({sum(y)} ALS, {len(y)-sum(y)} Control)")
     print()
     
@@ -66,16 +73,16 @@ def main(features_file, output_file, best_features_file):
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
         
-        # Test both models
-        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+        # Test both models with explicit random seed
+        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_SEED)
         
         # Random Forest
-        rf = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5)
+        rf = RandomForestClassifier(n_estimators=100, random_state=RANDOM_SEED, max_depth=5)
         rf_scores = cross_val_score(rf, X_scaled, y, cv=cv, scoring='f1')
         rf_f1 = rf_scores.mean()
         
         # Logistic Regression
-        lr = LogisticRegression(random_state=42, max_iter=1000)
+        lr = LogisticRegression(random_state=RANDOM_SEED, max_iter=1000)
         lr_scores = cross_val_score(lr, X_scaled, y, cv=cv, scoring='f1')
         lr_f1 = lr_scores.mean()
         
@@ -117,7 +124,8 @@ def main(features_file, output_file, best_features_file):
         json.dump({
             'combination': best_combination,
             'features': best_features,
-            'f1_score': best_score
+            'f1_score': best_score,
+            'random_seed': RANDOM_SEED
         }, f, indent=2)
     print(f"Best features saved to: {best_features_file}")
 
