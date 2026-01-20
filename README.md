@@ -164,15 +164,15 @@ results/
 ## Performance
 
 ### Benchmarking
-Tested on AWS EC2 instance:
+Tested on **AWS EC2 t2.xlarge** (4 vCPUs, 16 GB RAM):
 
 | Samples | Module | Wall Time | Notes |
 |---------|--------|-----------|-------|
-| 22 | Feature Extraction | ~5 min | Parallel processing |
+| 22 | Feature Extraction | ~2 min | Parallel processing |
 | 22 | Feature Selection | ~2 min | 11 combinations tested |
 | 22 | Classification | <1 min | Final model training |
 | 22 | Visualization | ~1 min | 7 publication plots |
-| 22 | **Full Pipeline** | **~10 min** | End-to-end |
+| 22 | **Full Pipeline** | **~5 min** | End-to-end |
 
 ### Resource Usage
 - **CPU:** 2 cores per sample (parallelized via Nextflow)
@@ -230,7 +230,7 @@ nextflow run main.nf -with-timeline timeline.html
 
 ## Key Findings
 
-### 1. Insert Size Variability Is The Most Discriminative Feature ⭐
+### 1. Insert Size Variability Is The Most Discriminative Feature
 - **Standard deviation (stddev) of insert sizes is the #1 most important feature**
   - ALS: Lower variability (~54 bp stddev)
   - Control: Higher variability (~63 bp stddev)
@@ -242,9 +242,9 @@ nextflow run main.nf -with-timeline timeline.html
   - Altered nucleosome positioning creates more predictable fragmentation
   - May reflect loss of normal epigenetic heterogeneity in disease
 
-### 2. Feature Selection Reveals Overfitting in Multi-Feature Models ⭐
+### 2. Feature Selection Reveals Overfitting in Multi-Feature Models
 - Tested 11 feature combinations systematically:
-  - Insert size only (8 features): **81.3% F1-score** ✅
+  - Insert size only (8 features): **81.3% F1-score**
   - All features with positions (59 features): 80.5% F1
   - All features without positions (56 features): 75.3% F1
 - **Overfitting occurs** when features >> samples (curse of dimensionality)
@@ -257,7 +257,7 @@ nextflow run main.nf -with-timeline timeline.html
 - Bisulfite treatment (C→T conversion) influences motif patterns
 - Fragmentation preferences differ between ALS and controls
 
-### 4. Methylation Shows Complex Multivariate Pattern ⭐
+### 4. Methylation Shows Complex Multivariate Pattern
 - **No significant univariate differences** in methylation rates (all p > 0.5)
   - CpG methylation: p = 0.597
   - CHG methylation: p = 0.632
