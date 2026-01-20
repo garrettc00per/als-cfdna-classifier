@@ -55,7 +55,7 @@ sudo yum install java-17-amazon-corretto -y
 java -version  # Should show Java 17
 ```
 
-###3. Install Nextflow
+### 3. Install Nextflow
 ```bash
 curl -s https://get.nextflow.io | bash
 sudo mv ~/nextflow /usr/local/bin/
@@ -80,13 +80,6 @@ mamba install samtools -y
 
 
 mamba install pandas scikit-learn matplotlib seaborn scipy
-```
-
-### 5. Install Nextflow
-```bash
-curl -s https://get.nextflow.io | bash
-chmod +x nextflow
-sudo mv nextflow /usr/local/bin/
 ```
 
 ### 6. Clone and Run
