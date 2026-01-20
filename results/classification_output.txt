@@ -7,26 +7,26 @@ Total features: 56
 ============================================================
 Logistic Regression
 ============================================================
-Accuracy:    0.773
-Precision:   0.769
-Sensitivity: 0.833
-F1-Score:    0.800
+Accuracy:    0.591
+Precision:   0.636
+Sensitivity: 0.583
+F1-Score:    0.609
 
 Confusion Matrix:
               Predicted
               Control  ALS
-Actual Control     7      3
-       ALS         2     10
+Actual Control     6      4
+       ALS         5      7
 
 Classification Report:
               precision    recall  f1-score   support
 
-     Control       0.78      0.70      0.74        10
-         ALS       0.77      0.83      0.80        12
+     Control       0.55      0.60      0.57        10
+         ALS       0.64      0.58      0.61        12
 
-    accuracy                           0.77        22
-   macro avg       0.77      0.77      0.77        22
-weighted avg       0.77      0.77      0.77        22
+    accuracy                           0.59        22
+   macro avg       0.59      0.59      0.59        22
+weighted avg       0.60      0.59      0.59        22
 
 ============================================================
 Random Forest

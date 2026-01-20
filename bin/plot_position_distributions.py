@@ -78,7 +78,7 @@ def plot_position_distributions(position_dir, metadata_file, output_file):
     ax = axes[1]
     
     # Read position summary for regional counts
-    position_summary = pd.read_csv(os.path.join(position_dir, '../position_summary.txt'), sep=' ')
+    position_summary = pd.read_csv(os.path.join(position_dir, 'position_summary.txt'), sep=' ')
     position_summary['disease_status'] = position_summary['sample_id'].map(disease_map)
     
     # Calculate proportions

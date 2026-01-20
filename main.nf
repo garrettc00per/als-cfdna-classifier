@@ -193,7 +193,7 @@ process CLASSIFY {
 }
 
 process VISUALIZE {
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/plots", mode: 'copy'
     
     input:
     path(features)
@@ -205,6 +205,40 @@ process VISUALIZE {
     script:
     """
     ${projectDir}/bin/create_visualizations.py ${features} visualizations
+    """
+}
+
+process VISUALIZE_POSITIONS {
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    
+    input:
+    path(position_bins)
+    path(position_summary)
+    path(metadata)
+    
+    output:
+    path("visualizations_position_distributions.png")
+    
+    script:
+    """
+    # Create temporary directory with all position files
+    mkdir -p positions
+    cp ${position_bins} positions/
+    cp ${position_summary} positions/
+    
+    ${projectDir}/bin/plot_position_distributions.py positions ${metadata} visualizations_position_distributions.png
+    """
+}
+
+process CREATE_SUMMARY_FIGURE {
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    
+    output:
+    path("pipeline_summary.png")
+    
+    script:
+    """
+    ${projectDir}/bin/create_summary_figure.py pipeline_summary.png
     """
 }
 
@@ -246,4 +280,14 @@ workflow {
     
     // Create visualizations
     VISUALIZE(all_features_ch)
+
+    // Create position distribution plots
+    VISUALIZE_POSITIONS(
+        positions_ch.map { it[1] }.collect(),
+        pos_summary_ch,
+        metadata_ch
+    )
+    
+    // Create pipeline summary figure
+    CREATE_SUMMARY_FIGURE()
 }
