@@ -58,6 +58,7 @@ java -version  # Should show Java 17
 ###3. Install Nextflow
 ```bash
 curl -s https://get.nextflow.io | bash
+sudo mv ~/nextflow /usr/local/bin/
 ```
 
 ### 4. Install Miniforge
