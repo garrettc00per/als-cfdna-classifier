@@ -51,25 +51,34 @@ git --version  # Verify
 
 ### 2. Install Java 17 (Required)
 ```bash
-sudo yum install -y java-17-amazon-corretto-devel
+sudo yum install java-17-amazon-corretto -y
 java -version  # Should show Java 17
 ```
 
-### 3. Install Miniconda
+###3. Install Nextflow
 ```bash
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
-rm Miniconda3-latest-Linux-x86_64.sh
+curl -s https://get.nextflow.io | bash
+```
+
+### 4. Install Miniforge
+```bash
+cd ~
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash Miniforge3-Linux-x86_64.sh
 source ~/.bashrc
 ```
 
-### 4. Set Up Environment (Add to ~/.bashrc)
+### 5. Add bioconda channel and install tools
 ```bash
-cat >> ~/.bashrc << 'EOF'
-export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
-export PATH=$JAVA_HOME/bin:~/miniconda3/bin:$PATH
-EOF
-source ~/.bashrc
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+
+mamba install samtools -y
+
+
+mamba install pandas scikit-learn matplotlib seaborn scipy
 ```
 
 ### 5. Install Nextflow
@@ -79,22 +88,12 @@ chmod +x nextflow
 sudo mv nextflow /usr/local/bin/
 ```
 
-### 6. Install Python Dependencies
+### 6. Clone and Run
 ```bash
-~/miniconda3/bin/pip install matplotlib seaborn scipy scikit-learn pandas numpy
-```
-
-### 7. Clone and Run
-```bash
-git clone https://github.com/YOUR-USERNAME/celfie-analysis.git
-cd celfie-analysis
+git clone https://github.com/garrettc00per/als-cfdna-classifier.git
+cd als-cfdna-classifier
 nextflow run main.nf
 ```
-
-### Troubleshooting
-- **Java not found:** Ensure `JAVA_HOME` is set correctly: `echo $JAVA_HOME`
-- **Python packages not found:** Use `~/miniconda3/bin/pip install` instead of plain `pip`
-- **Network errors (handshake_failure):** Check AWS Security Group allows outbound HTTPS (port 443)
 
 ---
 
