@@ -165,7 +165,6 @@ process COMBINE_ALL_FEATURES {
     path(insert_summary)
     path(meth_summary)
     path(motif_features)
-    path(position_summary)
     path(metadata)
     
     output:
@@ -173,7 +172,7 @@ process COMBINE_ALL_FEATURES {
     
     script:
     """
-    ${projectDir}/bin/combine_all_features.py ${insert_summary} ${meth_summary} ${motif_features} ${position_summary} ${metadata} all_features_combined.csv
+    ${projectDir}/bin/combine_all_features.py ${insert_summary} ${meth_summary} ${motif_features} ${metadata} all_features_combined.csv
     """
 }
 
@@ -239,7 +238,6 @@ workflow {
         insert_summary_ch,
         meth_summary_ch,
         motif_features_ch,
-        pos_summary_ch,
         metadata_ch
     )
     

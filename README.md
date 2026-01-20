@@ -2,9 +2,9 @@
 
 A Nextflow-based bioinformatics pipeline for analyzing cell-free DNA (cfDNA) to distinguish ALS patients from healthy controls using fragment characteristics, end motifs, and methylation patterns.
 
-## 📊 Summary of Results
+## Summary of Results
 
-**Best Performance: 77.3% accuracy (Random Forest)**
+**Best Performance: 77.3% accuracy (Logistic Regression)**
 - Precision: 76.9%
 - Sensitivity: 83.3%
 - F1-Score: 80.0%
@@ -13,7 +13,7 @@ A Nextflow-based bioinformatics pipeline for analyzing cell-free DNA (cfDNA) to 
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 ### Objective
 Analyze bisulfite-treated cfDNA sequencing data (chr21 only) from 22 samples (12 ALS, 10 Control) to identify molecular markers that distinguish disease from control samples.
@@ -27,7 +27,7 @@ Analyze bisulfite-treated cfDNA sequencing data (chr21 only) from 22 samples (12
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Nextflow (v25.10.2+)
@@ -80,7 +80,7 @@ results/
 
 ---
 
-## 📈 Results & Analysis
+## Results & Analysis
 
 ### Performance Progression
 
@@ -90,8 +90,8 @@ We iteratively added feature types to understand their individual contributions:
 |------------|----------|----------|-------------|
 | **Insert Size Only** | 63.6% | 71.4% | Baseline: ALS has shorter, less variable fragments |
 | **+ End Motifs** | 63.6% | 66.7% | AT-rich motifs show promise but modest improvement |
-| **+ Methylation** | **77.3%** | **80.0%** | ✅ Major boost! Methylation most discriminative |
-| **+ Genomic Positions** | 63.6% | 66.7% | ❌ Performance degraded - positions not informative |
+| **+ Methylation** | **77.3%** | **80.0%** | Major boost! Methylation most discriminative |
+| **+ Genomic Positions** | 63.6% | 66.7% | Performance degraded - positions not informative |
 
 ### Key Findings
 
@@ -106,7 +106,7 @@ We iteratively added feature types to understand their individual contributions:
 - **ALS shows less variability:** StdDev is reduced in disease state
 - Suggests altered nucleosome positioning or DNA accessibility in ALS
 
-#### 3. Methylation Shows Complex Multivariate Pattern ⭐
+#### 3. Methylation Shows Complex Multivariate Pattern
 - **No significant univariate differences** in methylation rates (all p > 0.5)
   - CpG methylation: p = 0.597
   - CHG methylation: p = 0.632
@@ -119,7 +119,7 @@ We iteratively added feature types to understand their individual contributions:
   - Non-linear thresholds and decision boundaries
 - **Biological interpretation:** ALS may alter the coupling between DNA methylation and nucleosome positioning/fragmentation, a finding only detectable through multivariate machine learning approaches
 
-#### 4. Positional Features Degrade Performance ⚠️
+#### 4. Positional Features Degrade Performance
 - Adding genomic position features **decreased accuracy** from 77.3% → 63.6%
 - **Interpretation:** ALS fragmentation patterns are **not regionally specific** on chr21
 - High feature-to-sample ratio (60 features / 22 samples) likely caused overfitting
@@ -127,7 +127,7 @@ We iteratively added feature types to understand their individual contributions:
 
 ---
 
-## 🔬 Methodology
+## Methodology
 
 ### Feature Extraction
 
@@ -198,7 +198,7 @@ Key considerations:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 ```
 celfie-analysis/
 ├── main.nf                          # Nextflow pipeline definition
@@ -227,7 +227,7 @@ celfie-analysis/
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 Given more time and resources, the following extensions would be valuable:
 
@@ -287,16 +287,18 @@ Given more time and resources, the following extensions would be valuable:
 
 ---
 
-## 🛠️ Technical Details
+## Technical Details
 
 ### Software Versions Used
 - Nextflow: v25.10.2
-- Samtools: v1.x
-- Python: 3.x
-- scikit-learn: 1.x
-- pandas: 2.x
-- matplotlib: 3.x
-- seaborn: 0.x
+- Samtools: v1.23
+- Python: 3.12.12
+- scikit-learn: 1.8.0
+- pandas: 2.3.3
+- matplotlib: 3.10.8
+- seaborn: 0.12.2
+- scipy: 1.17.0
+- numpy: 2.4.1
 
 ### Computational Requirements
 - **Memory:** ~4 GB per sample
@@ -321,10 +323,10 @@ nextflow run main.nf -with-timeline timeline.html
 
 ---
 
-## 📚 References & Acknowledgments
+## References & Acknowledgments
 
 ### Data Source
-Cell-free DNA sequencing data from ALS study (see assignment description for paper reference)
+Cell-free DNA sequencing data from ALS study: Caggiano (2021), Nature Communications - https://www.nature.com/articles/s41467-021-22901-x
 
 ### Key Methods
 - **Bismark aligner:** Methylation-aware alignment
@@ -338,7 +340,7 @@ Cell-free DNA sequencing data from ALS study (see assignment description for pap
 
 ---
 
-## 📝 Notes
+## Notes
 
 ### Design Decisions
 
@@ -367,7 +369,7 @@ Cell-free DNA sequencing data from ALS study (see assignment description for pap
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -399,17 +401,17 @@ nextflow run main.nf
 
 ---
 
-## 📧 Contact & Support
+## Contact & Support
 
 For questions about this pipeline or analysis, please open an issue or contact the author.
 
-**Time invested:** ~2 hours implementation + visualization + documentation  
+**Time invested:** ~4 hours implementation + visualization + documentation  
 **Lines of code:** ~800 across all scripts  
 **Pipeline processes:** 11 processes with full automation  
 
 ---
 
-## 📄 License
+## License
 
 This code is provided for evaluation purposes as part of a take-home assignment.
 

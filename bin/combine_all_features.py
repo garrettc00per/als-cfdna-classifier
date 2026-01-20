@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 """
-Combine insert size, methylation, motif, and position features with disease labels
+Combine insert size, methylation, and motif features with disease labels
+(Excluding positional features as they degrade performance)
 """
 import sys
 import pandas as pd
 
-def main(insert_file, meth_file, motif_file, position_file, metadata_file, output_file):
-    # Load all features
+def main(insert_file, meth_file, motif_file, metadata_file, output_file):
+    # Load features (NOTE: deliberately excluding position_file)
     insert_df = pd.read_csv(insert_file, sep=' ')
     meth_df = pd.read_csv(meth_file, sep=' ')
     motif_df = pd.read_csv(motif_file)
-    position_df = pd.read_csv(position_file, sep=' ')
     
-    # Merge all features
+    # Merge features (no positions)
     combined_df = insert_df.merge(meth_df, on='sample_id')
     combined_df = combined_df.merge(motif_df, on='sample_id')
-    combined_df = combined_df.merge(position_df, on='sample_id')
     
     # Add disease labels
     metadata_df = pd.read_csv(metadata_file)
@@ -25,14 +24,13 @@ def main(insert_file, meth_file, motif_file, position_file, metadata_file, outpu
     # Save
     combined_df.to_csv(output_file, index=False)
     
-    print(f"Combined ALL features:")
+    print(f"Combined features (excluding positions):")
     print(f"  Samples: {len(combined_df)}")
     print(f"  Insert size features: 8")
     print(f"  Methylation features: 8")
     print(f"  Motif features: 40")
-    print(f"  Position features: 3")
     print(f"  Total features: {len(combined_df.columns) - 2}")
     print(f"  Output: {output_file}")
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
