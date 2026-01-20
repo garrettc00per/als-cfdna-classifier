@@ -1,0 +1,56 @@
+Dataset: 22 samples
+  ALS: 12 samples
+  Control: 10 samples
+
+Total features: 60
+
+============================================================
+Logistic Regression
+============================================================
+Accuracy:    0.682
+Precision:   0.692
+Sensitivity: 0.750
+F1-Score:    0.720
+
+Confusion Matrix:
+              Predicted
+              Control  ALS
+Actual Control     6      4
+       ALS         3      9
+
+Classification Report:
+              precision    recall  f1-score   support
+
+     Control       0.67      0.60      0.63        10
+         ALS       0.69      0.75      0.72        12
+
+    accuracy                           0.68        22
+   macro avg       0.68      0.68      0.68        22
+weighted avg       0.68      0.68      0.68        22
+
+============================================================
+Random Forest
+============================================================
+Accuracy:    0.636
+Precision:   0.667
+Sensitivity: 0.667
+F1-Score:    0.667
+
+Confusion Matrix:
+              Predicted
+              Control  ALS
+Actual Control     6      4
+       ALS         4      8
+
+Classification Report:
+              precision    recall  f1-score   support
+
+     Control       0.60      0.60      0.60        10
+         ALS       0.67      0.67      0.67        12
+
+    accuracy                           0.64        22
+   macro avg       0.63      0.63      0.63        22
+weighted avg       0.64      0.64      0.64        22
+
+
+Results saved to: classification_results.csv

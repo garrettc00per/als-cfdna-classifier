@@ -1,0 +1,20 @@
+# Nextflow
+work/
+.nextflow*
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Data (don't commit large files)
+*.bam
+*.bam.bai
+
+# Results (optional - you might want to commit some results)
+# results/
+
+# OS
+.DS_Store
+Thumbs.db
