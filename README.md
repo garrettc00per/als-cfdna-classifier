@@ -90,7 +90,7 @@ We iteratively added feature types to understand their individual contributions:
 |------------|----------|----------|-------------|
 | **Insert Size Only** | 63.6% | 71.4% | Baseline: ALS has shorter, less variable fragments |
 | **+ End Motifs** | 63.6% | 66.7% | AT-rich motifs show promise but modest improvement |
-| **+ Methylation** | **77.3%** | **80.0%** | Major boost! Methylation most discriminative |
+| **+ Methylation** | **77.3%** | **80.0%** | Major boost! Methylation most discriminative | ← **Final model**
 | **+ Genomic Positions** | 63.6% | 66.7% | Performance degraded - positions not informative |
 
 ### Key Findings
@@ -101,10 +101,21 @@ We iteratively added feature types to understand their individual contributions:
 - Bisulfite treatment (C→T conversion) influences motif patterns
 - Fragmentation preferences differ between ALS and controls
 
-#### 2. Fragment Characteristics Differ in ALS
-- **ALS samples have shorter fragments:** Mean 169.8 bp vs Control 175.6 bp (~6 bp difference)
-- **ALS shows less variability:** StdDev is reduced in disease state
-- Suggests altered nucleosome positioning or DNA accessibility in ALS
+#### 2. Fragment Size Variability Is The Most Discriminative Feature ⭐
+- **Standard deviation (stddev) of insert sizes is the #1 most important feature**
+  - ALS: Lower variability (~54 bp stddev)
+  - Control: Higher variability (~63 bp stddev)
+- **Key Insight:** Not just the average fragment size matters, but the **uniformity of fragmentation**
+  - ALS shows more **consistent, uniform fragment sizes** 
+  - Controls show more **heterogeneous fragmentation patterns**
+- **Biological Interpretation:**
+  - Lower variability suggests dysregulated chromatin structure in ALS
+  - Altered nucleosome positioning creates more predictable fragmentation
+  - May reflect loss of normal epigenetic heterogeneity in disease
+- **Additional findings:**
+  - ALS samples also have shorter fragments on average: 169.8 bp vs 175.6 bp
+  - Total fragment count (n_fragments) is the 2nd most important feature
+  - Fragment characteristics outperform individual motif frequencies
 
 #### 3. Methylation Shows Complex Multivariate Pattern
 - **No significant univariate differences** in methylation rates (all p > 0.5)
