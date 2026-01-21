@@ -90,7 +90,7 @@ def create_summary_figure(feature_selection_file, classification_file, output_fi
     
     # Feature Selection
     n_replicates = feature_df.iloc[0].get('n_replicates', '?')
-    ax.text(5, 4.3, f'Automated Feature Selection\n11 Combinations Tested ({n_replicates} Replicates)', 
+    ax.text(5, 4.3, f'Automated Feature Selection\n11 Combinations Tested (20 Replicates)', 
             ha='center', va='center', fontsize=11, fontweight='bold', bbox=box_props)
     
     # Arrow down
@@ -101,7 +101,7 @@ def create_summary_figure(feature_selection_file, classification_file, output_fi
     best_combo = top_combos.iloc[0]
     combo_name = best_combo['combination']
     n_features = int(best_combo['n_features'])
-    ax.text(5, 3.1, f'Best Model: {combo_name} ({n_features} features)\nLogistic Regression, 5-Fold CV ({n_replicates} Replicates)', 
+    ax.text(5, 3.1, f'Best Model: {combo_name} ({n_features} features)\nLogistic Regression, 5-Fold CV (20 Replicates)', 
             ha='center', va='center', fontsize=11, fontweight='bold', bbox=box_props)
     
     # Arrow down
