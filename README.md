@@ -23,8 +23,8 @@ BAMs → [1] Extract Features → [2] Select Features → [3] Classify → [4] V
 ## Quick Start
 ```bash
 # Clone repository
-git clone <repository-url>
-cd celfie-analysis
+git clone https://github.com/garrettc00per/als-cfdna-classifier.git
+cd als_cfdna_classifier
 
 # Install dependencies
 mamba install -c bioconda samtools nextflow
@@ -93,7 +93,7 @@ nextflow run main.nf
 
 ## Summary of Results (20 Replicates)
 
-**⚠️ Important Note on Reproducibility:** Due to the small sample size (n=22) and stochastic nature of cross-validation, results will vary between pipeline runs even with the same data. The rankings and absolute performance values below represent one execution; repeat runs may show different feature combinations as "best." This variability is expected and scientifically meaningful—it reflects the fundamental challenge of feature selection in low-sample regimes.
+**Important Note on Reproducibility:** Due to the small sample size (n=22) and stochastic nature of cross-validation, results will vary between pipeline runs even with the same data. The rankings and absolute performance values below represent one execution; repeat runs may show different feature combinations as "best." This variability is expected and scientifically meaningful. It reflects the fundamental challenge of feature selection in low-sample datasets.
 
 **Top Performing Combinations (Mean ± SD across 20 replicates):**
 1. **Insert + Positions** (11 features): 70.2% F1 ± 6.2%
@@ -108,7 +108,7 @@ nextflow run main.nf
 - **Precision: 73.9% ± 7.0%**
 - **Model: Logistic Regression**
 
-**Key Insight:** Top 4 combinations are highly competitive (all ~68-70% F1), with overlapping confidence intervals. This demonstrates that **multiple cfDNA characteristics are informative for ALS detection**, and no single feature set dominates with n=22 samples. Different runs may rank these combinations differently—this is the expected behavior of feature selection with limited data, not a pipeline failure.
+**Key Insight:** Top 4 combinations are highly competitive (all ~68-70% F1), with overlapping confidence intervals. This demonstrates that **multiple cfDNA characteristics are informative for ALS detection**, and no single feature set dominates with n=22 samples. Different runs may rank these combinations differently. This is the expected behavior of feature selection with limited data, not a pipeline failure.
 
 ---
 
