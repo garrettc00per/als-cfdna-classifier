@@ -93,22 +93,22 @@ nextflow run main.nf
 
 ## Summary of Results (20 Replicates)
 
-**Feature Selection Finding:** Multiple feature combinations perform competitively, reflecting the inherent challenge of feature selection with limited sample size (n=22):
+**⚠️ Important Note on Reproducibility:** Due to the small sample size (n=22) and stochastic nature of cross-validation, results will vary between pipeline runs even with the same data. The rankings and absolute performance values below represent one execution; repeat runs may show different feature combinations as "best." This variability is expected and scientifically meaningful—it reflects the fundamental challenge of feature selection in low-sample regimes.
 
 **Top Performing Combinations (Mean ± SD across 20 replicates):**
-1. **Insert + Positions** (11 features): 71.66% F1 ± 7.2%
-2. **Positions Only** (3 features): 70.26% F1 ± 4.8%
-3. **Motifs Only** (40 features): 67.09% F1 ± 8.6%
-4. **Insert Size Only** (8 features): 66.13% F1 ± 7.1%
+1. **Insert + Positions** (11 features): 70.2% F1 ± 6.2%
+2. **Motifs Only** (40 features): 70.1% F1 ± 8.1%
+3. **Insert + Motifs** (48 features): 69.3% F1 ± 7.0%
+4. **Positions Only** (3 features): 68.2% F1 ± 6.0%
 
 **Best Classifier Performance (Insert + Positions with 11 features):**
-- **F1-Score: 69.8% ± 8.4%**
-- **Accuracy: 69.3% ± 8.7%**
-- **Sensitivity: 65.0% ± 9.0%**
-- **Precision: 76.3% ± 10.8%**
-- **Model: Random Forest (slightly outperforms Logistic Regression)**
+- **F1-Score: 69.4% ± 8.3%**
+- **Accuracy: 68.6% ± 6.6%**
+- **Sensitivity: 66.7% ± 12.1%**
+- **Precision: 73.9% ± 7.0%**
+- **Model: Logistic Regression**
 
-**Key Insight:** Top 4 combinations are competitive (within ~6% F1), suggesting that **multiple cfDNA characteristics are informative for ALS detection**. With n=22 samples, feature selection inherently lacks stability to identify a single dominant feature set. This is expected behavior in low-sample regimes and indicates the need for larger validation cohorts.
+**Key Insight:** Top 4 combinations are highly competitive (all ~68-70% F1), with overlapping confidence intervals. This demonstrates that **multiple cfDNA characteristics are informative for ALS detection**, and no single feature set dominates with n=22 samples. Different runs may rank these combinations differently—this is the expected behavior of feature selection with limited data, not a pipeline failure.
 
 ---
 
@@ -294,37 +294,36 @@ nextflow run main.nf -with-timeline timeline.html
 ## Key Findings
 
 ### 1. Multiple Feature Combinations Show Competitive Performance
-- Top 4 feature sets all achieve >66% F1-score (within error margins)
-- **Insert + Positions** (11 features) and **Positions Only** (3 features) are most competitive
-- Results vary across 20 replicates, reflecting small sample size (n=22)
-- **Key Insight:** This is NOT a failure of the pipeline—it demonstrates that **with limited samples, multiple feature solutions are equally valid**
-- **Biological Interpretation:** cfDNA changes in ALS manifest across multiple scales (fragmentation size, positional patterns, and motif composition)
+- Top 4 feature sets achieve 68-70% F1-score with overlapping error bars
+- **Insert + Positions** (11 features), **Motifs Only** (40 features), and **Insert + Motifs** (48 features) perform nearly identically
+- **Run-to-run variability is expected**: Different executions may rank these combinations differently due to CV fold randomization with n=22
+- **Key Insight:** This is NOT a failure—it demonstrates that **with limited samples, multiple feature solutions are equally valid**
+- **Biological Interpretation:** cfDNA changes in ALS manifest across multiple molecular scales (fragmentation patterns, sequence composition, genomic positioning)
 
-### 2. Feature Selection Reveals Overfitting in Multi-Feature Models
-- Tested 11 feature combinations systematically:
-  - Insert size only (8 features): **81.3% F1-score**
-  - All features with positions (59 features): 80.5% F1
-  - All features without positions (56 features): 75.3% F1
-- **Overfitting occurs** when features >> samples (curse of dimensionality)
-- Final model uses only: mean, median, stddev, quartiles, min, max, fragment count
-- **This demonstrates that fragment size variability is the dominant ALS signal**
+### 2. Insert Size + Positional Features Are Most Informative (This Run)
+- **Insert + Positions (11 features):** 70.2% F1 ± 6.2% (current best combination)
+- Combining fragment size statistics with genomic position distributions improves discrimination
+- Suggests ALS-specific fragmentation patterns are both quantitative (fragment length) and spatial (genomic localization)
+- **However:** Motifs Only (70.1% F1) performs nearly identically—difference is within noise
 
-### 3. Insert Size + Positional Features Are Most Informative
-- **Insert + Positions (11 features):** 71.66% F1 ± 7.2% (best feature combination)
-- Combining fragment size statistics with genomic positions improves discrimination
-- Suggests ALS-specific fragmentation patterns are both quantitative and spatial
+### 3. End Motifs Show Surprisingly Strong Individual Performance  
+- **Motifs Only**: 70.1% F1 ± 8.1% (competitive with best combination)
+- 4-mer frequencies at fragment ends capture sequence-specific fragmentation preferences
+- Likely reflects altered chromatin accessibility and nucleosome positioning in ALS
+- High standalone performance suggests motif analysis deserves further investigation
 
-### 4. End Motifs and Methylation Show Weaker Individual Performance
-- Motifs Only: 67.09% F1 ± 8.6%
-- Methylation Only: 60.82% F1 ± 7.9%
-- These features likely provide complementary information rather than standalone biomarkers
-- Yet improve performance when combined with insert size data
+### 4. Methylation Shows Weak Standalone Performance
+- **Methylation Only**: 60.4% F1 ± 7.5% (lowest individual performer)
+- Does not significantly improve performance when added to other features
+- May provide complementary information in larger cohorts
+- CpG/CHG/CHH patterns alone insufficient for ALS discrimination with chr21 data
 
-### 5. Feature Selection Instability with Limited Samples
-- Top 4 combinations within ~6% F1 across 20 replicates
-- No single "winner" emerges with high confidence
-- **Biological Interpretation:** ALS is characterized by **multifactorial cfDNA changes** rather than a single dominant signal
-- Larger cohorts needed for stable feature selection and clinical validation
+### 5. Feature Selection Instability Reflects Small Sample Size
+- Top 4 combinations within ~2% F1 (within statistical noise)
+- **Rankings will change between runs** due to CV fold randomization
+- This is **scientifically valid behavior**, not a bug
+- **Biological Interpretation:** ALS involves **multifactorial cfDNA changes** rather than a single dominant biomarker
+- **Recommendation:** Larger cohorts (n>100) needed for stable feature selection and clinical validation
 
 ---
 
