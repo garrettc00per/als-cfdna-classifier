@@ -1,55 +1,23 @@
-Random Seed: 42
 Dataset: 22 samples
   ALS: 12 samples
   Control: 10 samples
 
-Feature Combination: Insert Size Only
-Total features: 8
+Feature Combination: Motifs Only
+Total features: 40
+Replicates: 5
 
 ============================================================
 Logistic Regression
 ============================================================
-Accuracy:    0.773
-Precision:   0.769
-Sensitivity: 0.833
-F1-Score:    0.800
-
-Confusion Matrix:
-              Predicted
-              Control  ALS
-Actual Control     7      3
-       ALS         2     10
-
-Classification Report:
-              precision    recall  f1-score   support
-
-     Control       0.78      0.70      0.74        10
-         ALS       0.77      0.83      0.80        12
-
-    accuracy                           0.77        22
-   macro avg       0.77      0.77      0.77        22
-weighted avg       0.77      0.77      0.77        22
+Accuracy:    0.709 ± 0.046
+Precision:   0.701 ± 0.035
+Sensitivity: 0.817 ± 0.097
+F1-Score:    0.752 ± 0.051
 
 ============================================================
 Random Forest
 ============================================================
-Accuracy:    0.682
-Precision:   0.778
-Sensitivity: 0.583
-F1-Score:    0.667
-
-Confusion Matrix:
-              Predicted
-              Control  ALS
-Actual Control     8      2
-       ALS         5      7
-
-Classification Report:
-              precision    recall  f1-score   support
-
-     Control       0.62      0.80      0.70        10
-         ALS       0.78      0.58      0.67        12
-
-    accuracy                           0.68        22
-   macro avg       0.70      0.69      0.68        22
-weighted avg       0.70      0.68      0.68        22
+Accuracy:    0.600 ± 0.018
+Precision:   0.629 ± 0.012
+Sensitivity: 0.650 ± 0.062
+F1-Score:    0.638 ± 0.031
