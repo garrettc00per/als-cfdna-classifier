@@ -248,6 +248,8 @@ process VISUALIZE_POSITIONS {
 }
 
 process CREATE_SUMMARY_FIGURE {
+    publishDir "${params.outdir}/plots", mode: 'copy'
+
     input:
     path feature_selection_csv
     path classification_csv
@@ -302,7 +304,7 @@ workflow {
     feature_selection_ch = FEATURE_SELECTION(all_features_ch)
     
     // Classify with best features
-    CLASSIFY_BEST(all_features_ch, feature_selection_ch[1])
+    classify_best_ch = CLASSIFY_BEST(all_features_ch, feature_selection_ch[1])
     
     // Create visualizations
     VISUALIZE(all_features_ch)
@@ -317,7 +319,7 @@ workflow {
     
     // Create pipeline summary figure
     CREATE_SUMMARY_FIGURE(
-        FEATURE_SELECTION.out.feature_selection_csv,
-        CLASSIFY_BEST.out.classification_csv
+        feature_selection_ch.feature_selection_csv,
+        classify_best_ch.classification_csv
 )
 }

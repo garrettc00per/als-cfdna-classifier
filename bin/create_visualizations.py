@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_predict, StratifiedKFold
 from sklearn.metrics import confusion_matrix
+from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -29,7 +30,7 @@ def plot_feature_importance(df, output_prefix):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
-    rf = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5)
+    rf = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5, n_jobs=1)
     rf.fit(X_scaled, y)
     
     # Get feature importances
@@ -115,7 +116,7 @@ def plot_confusion_matrix(df, output_prefix):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
-    rf = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5)
+    rf = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=5, n_jobs=1)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     y_pred = cross_val_predict(rf, X_scaled, y, cv=cv)
     
@@ -173,7 +174,6 @@ def plot_methylation_comparison(df, output_prefix):
         ax.grid(alpha=0.3, axis='y')
         
         # Add p-value (simple t-test)
-        from scipy import stats
         t_stat, p_val = stats.ttest_ind(ctrl_data[feature], als_data[feature])
         ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10)
     
@@ -200,6 +200,16 @@ def plot_insert_size_comparison(df, output_prefix):
     ax.set_title('Mean Insert Size', fontsize=12, fontweight='bold')
     ax.grid(alpha=0.3, axis='y')
     
+    # Add individual points
+    for i, data in enumerate([ctrl_data['mean'], als_data['mean']]):
+        y = data
+        x = np.random.normal(i+1, 0.04, size=len(y))
+        ax.plot(x, y, 'ko', alpha=0.3, markersize=6)
+    
+    # Add p-value
+    t_stat, p_val = stats.ttest_ind(ctrl_data['mean'], als_data['mean'])
+    ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10)
+    
     # Median insert size
     ax = axes[1]
     bp = ax.boxplot([ctrl_data['median'], als_data['median']], 
@@ -211,7 +221,17 @@ def plot_insert_size_comparison(df, output_prefix):
     ax.set_title('Median Insert Size', fontsize=12, fontweight='bold')
     ax.grid(alpha=0.3, axis='y')
     
-    # Standard deviation
+    # Add individual points
+    for i, data in enumerate([ctrl_data['median'], als_data['median']]):
+        y = data
+        x = np.random.normal(i+1, 0.04, size=len(y))
+        ax.plot(x, y, 'ko', alpha=0.3, markersize=6)
+    
+    # Add p-value
+    t_stat, p_val = stats.ttest_ind(ctrl_data['median'], als_data['median'])
+    ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10)
+    
+    # Standard deviation (most important!)
     ax = axes[2]
     bp = ax.boxplot([ctrl_data['stddev'], als_data['stddev']], 
                      labels=['Control', 'ALS'], patch_artist=True,
@@ -219,8 +239,18 @@ def plot_insert_size_comparison(df, output_prefix):
     bp['boxes'][0].set_facecolor('#3498db')
     bp['boxes'][1].set_facecolor('#e74c3c')
     ax.set_ylabel('Std Dev of Insert Size (bp)', fontsize=11)
-    ax.set_title('Insert Size Variability', fontsize=12, fontweight='bold')
+    ax.set_title('Insert Size Variability (KEY FEATURE)', fontsize=12, fontweight='bold')
     ax.grid(alpha=0.3, axis='y')
+    
+    # Add individual points
+    for i, data in enumerate([ctrl_data['stddev'], als_data['stddev']]):
+        y = data
+        x = np.random.normal(i+1, 0.04, size=len(y))
+        ax.plot(x, y, 'ko', alpha=0.3, markersize=6)
+    
+    # Add p-value (highlighted in red because this is the most important)
+    t_stat, p_val = stats.ttest_ind(ctrl_data['stddev'], als_data['stddev'])
+    ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10, fontweight='bold', color='red')
     
     plt.suptitle('Insert Size Characteristics: ALS vs Control', fontsize=16, fontweight='bold')
     plt.tight_layout()
