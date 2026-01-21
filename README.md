@@ -96,16 +96,19 @@ nextflow run main.nf
 **Feature Selection Finding:** Multiple feature combinations perform competitively, reflecting the inherent challenge of feature selection with limited sample size (n=22):
 
 **Top Performing Combinations (Mean ± SD across 20 replicates):**
-1. **Positions Only** (3 features): 70.38% F1 ± 6.1%
-2. **Insert + Positions** (11 features): 69.16% F1 ± 6.7%
-3. **Insert Size Only** (8 features): 67.44% F1 ± 6.3%
-4. **Motifs Only** (40 features): 67.22% F1 ± 8.6%
+1. **Insert + Positions** (11 features): 71.66% F1 ± 7.2%
+2. **Positions Only** (3 features): 70.26% F1 ± 4.8%
+3. **Motifs Only** (40 features): 67.09% F1 ± 8.6%
+4. **Insert Size Only** (8 features): 66.13% F1 ± 7.1%
 
-**Key Insight:** Top 4 combinations are competitive (within ~3% F1), suggesting that **multiple cfDNA characteristics are informative for ALS detection**. With n=22 samples, feature selection lacks stability to identify a single dominant feature set. This is expected behavior in low-sample regimes and indicates the need for larger validation cohorts.
+**Best Classifier Performance (Insert + Positions with 11 features):**
+- **F1-Score: 69.8% ± 8.4%**
+- **Accuracy: 69.3% ± 8.7%**
+- **Sensitivity: 65.0% ± 9.0%**
+- **Precision: 76.3% ± 10.8%**
+- **Model: Random Forest (slightly outperforms Logistic Regression)**
 
-**Best Classifier (using top-performing feature combination):**
-- Logistic Regression achieves highest F1-scores across all feature sets
-- Consistent performance: LR outperforms Random Forest in 10 of 11 combinations
+**Key Insight:** Top 4 combinations are competitive (within ~6% F1), suggesting that **multiple cfDNA characteristics are informative for ALS detection**. With n=22 samples, feature selection inherently lacks stability to identify a single dominant feature set. This is expected behavior in low-sample regimes and indicates the need for larger validation cohorts.
 
 ---
 
@@ -208,9 +211,9 @@ results/
 │   ├── visualizations_position_distributions.png
 │   └── pipeline_summary.png
 ├── all_features_combined.csv              # Complete feature matrix
-├── feature_selection_results.csv          # Performance of 11 combinations
+├── feature_selection_results.csv          # Performance of 11 combinations (20 replicates)
 ├── best_features.json                     # Optimal feature set
-├── classification_results.csv             # Final model performance
+├── classification_results.csv             # Final model performance (20 replicates)
 ├── classification_output.txt              # Detailed metrics
 ├── insert_size_summary_labeled.txt        # Summary statistics
 ├── methylation_summary.txt                # Methylation rates
@@ -291,11 +294,11 @@ nextflow run main.nf -with-timeline timeline.html
 ## Key Findings
 
 ### 1. Multiple Feature Combinations Show Competitive Performance
-- Top 4 feature sets all achieve >67% F1-score (within error margins)
-- **Positions Only** (3 features) surprisingly competitive with larger feature sets
+- Top 4 feature sets all achieve >66% F1-score (within error margins)
+- **Insert + Positions** (11 features) and **Positions Only** (3 features) are most competitive
 - Results vary across 20 replicates, reflecting small sample size (n=22)
 - **Key Insight:** This is NOT a failure of the pipeline—it demonstrates that **with limited samples, multiple feature solutions are equally valid**
-- Biological Interpretation: cfDNA changes in ALS manifest across multiple scales (fragmentation patterns, motifs, regional distributions)
+- **Biological Interpretation:** cfDNA changes in ALS manifest across multiple scales (fragmentation size, positional patterns, and motif composition)
 
 ### 2. Feature Selection Reveals Overfitting in Multi-Feature Models
 - Tested 11 feature combinations systematically:
@@ -306,27 +309,22 @@ nextflow run main.nf -with-timeline timeline.html
 - Final model uses only: mean, median, stddev, quartiles, min, max, fragment count
 - **This demonstrates that fragment size variability is the dominant ALS signal**
 
-### 3. End Motifs Show AT-Rich Patterns
-- Most important motifs: AATA, TTTT, ATTA, TATT
-- AT-rich sequences preferentially occur at fragment ends
-- Bisulfite treatment (C→T conversion) influences motif patterns
-- Fragmentation preferences differ between ALS and controls
+### 3. Insert Size + Positional Features Are Most Informative
+- **Insert + Positions (11 features):** 71.66% F1 ± 7.2% (best feature combination)
+- Combining fragment size statistics with genomic positions improves discrimination
+- Suggests ALS-specific fragmentation patterns are both quantitative and spatial
 
-### 4. Methylation Shows Complex Multivariate Pattern
-- **No significant univariate differences** in methylation rates (all p > 0.5)
-  - CpG methylation: p = 0.597
-  - CHG methylation: p = 0.632
-  - CHH methylation: p = 0.583
-- **Yet improves classification in combination with other features**
-- **Key Insight:** ALS is characterized by **altered relationships between methylation and fragmentation** rather than simple methylation changes
-- Traditional t-tests examine features independently; machine learning detects multivariate interactions
-- **Biological interpretation:** ALS may alter the coupling between DNA methylation and nucleosome positioning
+### 4. End Motifs and Methylation Show Weaker Individual Performance
+- Motifs Only: 67.09% F1 ± 8.6%
+- Methylation Only: 60.82% F1 ± 7.9%
+- These features likely provide complementary information rather than standalone biomarkers
+- Yet improve performance when combined with insert size data
 
-### 5. Positional Features Show No Regional Specificity
-- Adding genomic position features degrades performance in isolation
-- Suggests ALS fragmentation patterns are **molecular, not positional**
-- No enrichment in specific chr21 regions
-- Disease signal is in fragment characteristics, not genomic location
+### 5. Feature Selection Instability with Limited Samples
+- Top 4 combinations within ~6% F1 across 20 replicates
+- No single "winner" emerges with high confidence
+- **Biological Interpretation:** ALS is characterized by **multifactorial cfDNA changes** rather than a single dominant signal
+- Larger cohorts needed for stable feature selection and clinical validation
 
 ---
 
@@ -334,8 +332,8 @@ nextflow run main.nf -with-timeline timeline.html
 
 ### Automated Feature Selection
 - Systematically tests all feature combinations
+- Runs 20 replicates for robustness assessment
 - Calculates cross-validated performance metrics
-- Automatically selects optimal feature set
 - Prevents manual bias in feature selection
 
 ### Modular Design
@@ -351,7 +349,7 @@ nextflow run main.nf -with-timeline timeline.html
 - Resource-aware parallelization
 
 ### Scientifically Rigorous
-- Stratified K-fold cross-validation (5 folds)
+- Stratified K-fold cross-validation (5 folds × 20 replicates)
 - Multiple classifiers tested (RF + Logistic Regression)
 - Feature standardization (zero mean, unit variance)
 - Proper handling of class imbalance
@@ -414,14 +412,12 @@ Given more time and resources, valuable extensions include:
 - **Read depth:** ~10M reads per sample (downsampled)
 
 ### Model Details
-**Best Performers (Top 4 Feature Combinations):**
-- Algorithm: Logistic Regression (preferred over Random Forest across all combos)
-- Top feature set: Positions Only (3 features) or Insert+Positions (11 features)
+**Best Performer (Insert + Positions, 11 features):**
+- Algorithm: Random Forest (100 estimators, max_depth=5)
 - Cross-validation: 5-fold stratified × 20 replicates
-- Max iterations: 1000
+- Performance: 69.8% F1 ± 8.4%, 69.3% Accuracy ± 8.7%
 
-**Feature Selection Recommendation:**
-Given the competitive performance of top 4 combinations, ensemble approaches or larger validation cohorts recommended for clinical deployment.
+**Recommendation:** Given the competitive performance of top 4 combinations, ensemble approaches or larger validation cohorts recommended for clinical deployment.
 
 ---
 
@@ -493,7 +489,7 @@ celfie-analysis/
 ## Author
 
 Garrett Cooper, PhD
-Genetic and Molecular Biology  
+Genetics and Molecular Biology  
 Department of Pediatrics
 
 **Time Invested:** ~6 hours (implementation + visualization + documentation)  

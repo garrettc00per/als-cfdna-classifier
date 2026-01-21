@@ -1,10 +1,18 @@
 {
-  "combination": "Positions Only",
+  "combination": "Insert + Positions",
   "features": [
+    "mean",
+    "median",
+    "stddev",
+    "min",
+    "max",
+    "q25",
+    "q75",
+    "n_fragments",
     "region1_count",
     "region2_count",
     "region3_count"
   ],
-  "f1_score_mean": 0.7037619047619047,
+  "f1_score_mean": 0.7166428571428571,
   "n_replicates": 20
 }

@@ -184,7 +184,7 @@ process FEATURE_SELECTION {
     path(features)
     
     output:
-    path("feature_selection_results.csv")
+    path("feature_selection_results.csv"), emit: feature_selection_csv
     path("best_features.json")
     
     script:
@@ -201,7 +201,7 @@ process CLASSIFY_BEST {
     path(best_features)
     
     output:
-    path("classification_results.csv")
+    path("classification_results.csv"), emit: classification_csv
     path("classification_output.txt")
     
     script:
@@ -248,14 +248,19 @@ process VISUALIZE_POSITIONS {
 }
 
 process CREATE_SUMMARY_FIGURE {
-    publishDir "${params.outdir}/plots", mode: 'copy'
+    input:
+    path feature_selection_csv
+    path classification_csv
     
     output:
-    path("pipeline_summary.png")
+    path 'pipeline_summary.png'
     
     script:
     """
-    ${projectDir}/bin/create_summary_figure.py pipeline_summary.png
+    python ${projectDir}/bin/create_summary_figure.py \\
+        ${feature_selection_csv} \\
+        ${classification_csv} \\
+        pipeline_summary.png
     """
 }
 
@@ -311,5 +316,8 @@ workflow {
     )
     
     // Create pipeline summary figure
-    CREATE_SUMMARY_FIGURE()
+    CREATE_SUMMARY_FIGURE(
+        FEATURE_SELECTION.out.feature_selection_csv,
+        CLASSIFY_BEST.out.classification_csv
+)
 }
