@@ -30,6 +30,9 @@ cd als_cfdna_classifier
 mamba install -c bioconda samtools nextflow
 mamba install pandas scikit-learn matplotlib seaborn scipy
 
+#Install raw data
+#Can be found here: https://drive.google.com/file/d/1Xt4SPbL8sYa9WAnUP_j0rZ_T9AJl7oTr/view
+
 # Run full pipeline
 nextflow run main.nf
 
@@ -82,7 +85,14 @@ mamba install samtools -y
 mamba install pandas scikit-learn matplotlib seaborn scipy
 ```
 
-### 6. Clone and Run
+### 6. Download Raw Data
+```bash
+#Data can be found here: https://drive.google.com/file/d/1Xt4SPbL8sYa9WAnUP_j0rZ_T9AJl7oTr/view
+#Download to your computer, upload to S3 and pull to your EC2 instance
+```
+
+
+### 7. Clone and Run
 ```bash
 git clone https://github.com/garrettc00per/als-cfdna-classifier.git
 cd als-cfdna-classifier
