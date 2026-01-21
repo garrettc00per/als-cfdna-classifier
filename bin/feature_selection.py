@@ -13,7 +13,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 import json
 
-N_REPLICATES = 5  # Change this to run more/fewer replicates
+N_REPLICATES = 20  # Change this to run more/fewer replicates
 
 def main(features_file, output_file, best_features_file):
     # Load data

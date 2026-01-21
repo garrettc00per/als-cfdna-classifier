@@ -15,7 +15,7 @@ from sklearn.model_selection import cross_val_predict, StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.metrics import confusion_matrix, classification_report
 
-N_REPLICATES = 5  # Match feature_selection.py
+N_REPLICATES = 20  # Match feature_selection.py
 
 def main(features_file, best_features_file, output_file, output_txt):
     # Load data

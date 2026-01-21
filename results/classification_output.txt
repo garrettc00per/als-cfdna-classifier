@@ -2,22 +2,22 @@ Dataset: 22 samples
   ALS: 12 samples
   Control: 10 samples
 
-Feature Combination: Motifs Only
-Total features: 40
-Replicates: 5
+Feature Combination: Positions Only
+Total features: 3
+Replicates: 20
 
 ============================================================
 Logistic Regression
 ============================================================
-Accuracy:    0.709 ± 0.046
-Precision:   0.701 ± 0.035
-Sensitivity: 0.817 ± 0.097
-F1-Score:    0.752 ± 0.051
+Accuracy:    0.698 ± 0.071
+Precision:   0.734 ± 0.084
+Sensitivity: 0.713 ± 0.049
+F1-Score:    0.721 ± 0.059
 
 ============================================================
 Random Forest
 ============================================================
-Accuracy:    0.600 ± 0.018
-Precision:   0.629 ± 0.012
-Sensitivity: 0.650 ± 0.062
-F1-Score:    0.638 ± 0.031
+Accuracy:    0.455 ± 0.079
+Precision:   0.500 ± 0.078
+Sensitivity: 0.483 ± 0.094
+F1-Score:    0.490 ± 0.080

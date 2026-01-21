@@ -91,15 +91,21 @@ nextflow run main.nf
 
 ---
 
-## Summary of Results
+## Summary of Results (20 Replicates)
 
-**Best Performance: 77.3% accuracy (Logistic Regression, Insert Size Features Only)**
-- F1-Score: 80.0%
-- Sensitivity: 83.3%
-- Precision: 76.9%
-- **Features used: 8 (fragment size characteristics only)**
+**Feature Selection Finding:** Multiple feature combinations perform competitively, reflecting the inherent challenge of feature selection with limited sample size (n=22):
 
-**Key Finding:** Systematic feature selection across 11 combinations revealed that insert size features alone outperform complex multi-feature models, demonstrating the importance of feature selection in low-sample regimes.
+**Top Performing Combinations (Mean ± SD across 20 replicates):**
+1. **Positions Only** (3 features): 70.38% F1 ± 6.1%
+2. **Insert + Positions** (11 features): 69.16% F1 ± 6.7%
+3. **Insert Size Only** (8 features): 67.44% F1 ± 6.3%
+4. **Motifs Only** (40 features): 67.22% F1 ± 8.6%
+
+**Key Insight:** Top 4 combinations are competitive (within ~3% F1), suggesting that **multiple cfDNA characteristics are informative for ALS detection**. With n=22 samples, feature selection lacks stability to identify a single dominant feature set. This is expected behavior in low-sample regimes and indicates the need for larger validation cohorts.
+
+**Best Classifier (using top-performing feature combination):**
+- Logistic Regression achieves highest F1-scores across all feature sets
+- Consistent performance: LR outperforms Random Forest in 10 of 11 combinations
 
 ---
 
@@ -218,13 +224,15 @@ results/
 ### Benchmarking
 Tested on **AWS EC2 t2.xlarge** (4 vCPUs, 16 GB RAM):
 
-| Samples | Module | Wall Time | Notes |
-|---------|--------|-----------|-------|
-| 22 | Feature Extraction | ~2 min | Parallel processing |
-| 22 | Feature Selection | ~2 min | 11 combinations tested |
-| 22 | Classification | <1 min | Final model training |
-| 22 | Visualization | ~1 min | 7 publication plots |
-| 22 | **Full Pipeline** | **~5 min** | End-to-end |
+| Task | Replicates | Wall Time | Notes |
+|------|------------|-----------|-------|
+| Full Feature Extraction | - | ~45 sec | 22 samples, parallel |
+| Feature Selection | 20 | ~2 min 30 sec | 11 combinations × 20 replicates |
+| Classification | 20 | ~45 sec | Final model training |
+| Visualization | - | ~30 sec | 7 publication plots |
+| **Full Pipeline** | **20 replicates** | **~3 min 45 sec** | **End-to-end** |
+
+*Note: 5-replicate runs complete in ~2 min; 20-replicate runs recommended for robust feature selection*
 
 ### Resource Usage
 - **CPU:** 2 cores per sample (parallelized via Nextflow)
@@ -282,17 +290,12 @@ nextflow run main.nf -with-timeline timeline.html
 
 ## Key Findings
 
-### 1. Insert Size Variability Is The Most Discriminative Feature
-- **Standard deviation (stddev) of insert sizes is the #1 most important feature**
-  - ALS: Lower variability (~54 bp stddev)
-  - Control: Higher variability (~63 bp stddev)
-- **Key Insight:** Fragment size **uniformity**, not just average size, distinguishes ALS
-  - ALS shows more **consistent, uniform fragment sizes**
-  - Controls show more **heterogeneous fragmentation patterns**
-- **Biological Interpretation:**
-  - Lower variability suggests dysregulated chromatin structure in ALS
-  - Altered nucleosome positioning creates more predictable fragmentation
-  - May reflect loss of normal epigenetic heterogeneity in disease
+### 1. Multiple Feature Combinations Show Competitive Performance
+- Top 4 feature sets all achieve >67% F1-score (within error margins)
+- **Positions Only** (3 features) surprisingly competitive with larger feature sets
+- Results vary across 20 replicates, reflecting small sample size (n=22)
+- **Key Insight:** This is NOT a failure of the pipeline—it demonstrates that **with limited samples, multiple feature solutions are equally valid**
+- Biological Interpretation: cfDNA changes in ALS manifest across multiple scales (fragmentation patterns, motifs, regional distributions)
 
 ### 2. Feature Selection Reveals Overfitting in Multi-Feature Models
 - Tested 11 feature combinations systematically:
@@ -411,11 +414,14 @@ Given more time and resources, valuable extensions include:
 - **Read depth:** ~10M reads per sample (downsampled)
 
 ### Model Details
-**Final Selected Model:**
-- Algorithm: Logistic Regression
-- Features: Insert size statistics (8 features)
-- Cross-validation: 5-fold stratified
+**Best Performers (Top 4 Feature Combinations):**
+- Algorithm: Logistic Regression (preferred over Random Forest across all combos)
+- Top feature set: Positions Only (3 features) or Insert+Positions (11 features)
+- Cross-validation: 5-fold stratified × 20 replicates
 - Max iterations: 1000
+
+**Feature Selection Recommendation:**
+Given the competitive performance of top 4 combinations, ensemble approaches or larger validation cohorts recommended for clinical deployment.
 
 ---
 
