@@ -231,7 +231,7 @@ def plot_insert_size_comparison(df, output_prefix):
     t_stat, p_val = stats.ttest_ind(ctrl_data['median'], als_data['median'])
     ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10)
     
-    # Standard deviation (most important!)
+    # Standard deviation
     ax = axes[2]
     bp = ax.boxplot([ctrl_data['stddev'], als_data['stddev']], 
                      labels=['Control', 'ALS'], patch_artist=True,
@@ -239,7 +239,7 @@ def plot_insert_size_comparison(df, output_prefix):
     bp['boxes'][0].set_facecolor('#3498db')
     bp['boxes'][1].set_facecolor('#e74c3c')
     ax.set_ylabel('Std Dev of Insert Size (bp)', fontsize=11)
-    ax.set_title('Insert Size Variability (KEY FEATURE)', fontsize=12, fontweight='bold')
+    ax.set_title('Insert Size Variability', fontsize=12, fontweight='bold')
     ax.grid(alpha=0.3, axis='y')
     
     # Add individual points
@@ -248,9 +248,9 @@ def plot_insert_size_comparison(df, output_prefix):
         x = np.random.normal(i+1, 0.04, size=len(y))
         ax.plot(x, y, 'ko', alpha=0.3, markersize=6)
     
-    # Add p-value (highlighted in red because this is the most important)
+    # Add p-value
     t_stat, p_val = stats.ttest_ind(ctrl_data['stddev'], als_data['stddev'])
-    ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10, fontweight='bold', color='red')
+    ax.text(1.5, ax.get_ylim()[1]*0.95, f'p={p_val:.3f}', ha='center', fontsize=10)
     
     plt.suptitle('Insert Size Characteristics: ALS vs Control', fontsize=16, fontweight='bold')
     plt.tight_layout()
