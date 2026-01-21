@@ -257,6 +257,50 @@ def plot_insert_size_comparison(df, output_prefix):
     plt.savefig(f'{output_prefix}_insert_size_comparison.png', dpi=300, bbox_inches='tight')
     print(f"Saved: {output_prefix}_insert_size_comparison.png")
 
+def plot_motif_comparison(df, output_prefix):
+    """Compare top motif frequencies between ALS and Control"""
+    # Get motif columns (they start with 'start_' or 'end_')
+    motif_cols = [col for col in df.columns if col.startswith('start_') or col.startswith('end_')]
+    
+    if not motif_cols:
+        print("No motif columns found")
+        return
+    
+    # Calculate mean frequency for each group
+    als_motifs = df[df['disease_status'] == 'als'][motif_cols].mean()
+    ctrl_motifs = df[df['disease_status'] == 'ctrl'][motif_cols].mean()
+    
+    # Get top 10 motifs by variance between groups
+    motif_diff = (als_motifs - ctrl_motifs).abs()
+    top_motifs = motif_diff.nlargest(10).index
+    
+    # Create comparison plot
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    x = np.arange(len(top_motifs))
+    width = 0.35
+    
+    als_vals = [als_motifs[m] for m in top_motifs]
+    ctrl_vals = [ctrl_motifs[m] for m in top_motifs]
+    
+    ax.bar(x - width/2, als_vals, width, label='ALS', color='salmon', alpha=0.8)
+    ax.bar(x + width/2, ctrl_vals, width, label='Control', color='skyblue', alpha=0.8)
+    
+    # Clean up motif names for display
+    clean_names = [m.replace('start_', 'S:').replace('end_', 'E:') for m in top_motifs]
+    ax.set_xticks(x)
+    ax.set_xticklabels(clean_names, rotation=45, ha='right')
+    ax.set_ylabel('Mean Frequency', fontsize=12)
+    ax.set_xlabel('Motif (S=Start, E=End)', fontsize=12)
+    ax.set_title('Top 10 Discriminative End Motifs', fontsize=14, fontweight='bold')
+    ax.legend()
+    ax.grid(axis='y', alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(f'{output_prefix}_motif_comparison.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"Motif comparison saved to {output_prefix}_motif_comparison.png")
+
 def main(features_file, output_prefix):
     print("Creating visualizations...")
     print("="*60)
@@ -284,6 +328,10 @@ def main(features_file, output_prefix):
     # 5. Insert size comparison
     print("5. Plotting insert size comparison...")
     plot_insert_size_comparison(df, output_prefix)
+    
+    # 6. End motif comparison
+    print("6. Plotting end motif comparison...")
+    plot_motif_comparison(df, output_prefix)
     
     print("\n" + "="*60)
     print("All visualizations complete!")
