@@ -135,11 +135,10 @@ Key conclusions:
 - ~70% F1 may be the performance ceiling with current data
 - Positions matter (contradicts initial hypothesis)
 
-HOW TO DISCUSS IN AN INTERVIEW
+DISCUSSION
 
-Frame the nuanced results as strength, not weakness:
 
-"Feature selection revealed several combinations achieving 68-70% F1, with Insert + Positions at 70.2%. However, with standard deviations of 5-6 percentage points, the top 4 are statistically indistinguishable.
+Feature selection revealed several combinations achieving 68-70% F1, with Insert + Positions at 70.2%. However, with standard deviations of 5-6 percentage points, the top 4 are statistically indistinguishable.
 
 This is an important finding, not a failure. With only 22 samples, we can't identify a single 'best' set, but we CAN conclude:
 
@@ -150,11 +149,9 @@ This is an important finding, not a failure. With only 22 samples, we can't iden
 
 I'd recommend Insert + Positions (11 features) as most parsimonious, but flag Motifs Only as alternative. The key is transparency about uncertainty rather than overstating conclusions."
 
-This demonstrates:
-- Understanding of statistical power and sample size limits
-- Interpreting "no clear winner" as meaningful
-- Making practical recommendations despite uncertainty
-- Scientific honesty
+This shows:
+- Statistical power and sample size limits
+- Establishes there is no "no clear winner"
 
 DESIGN CHOICES
 
@@ -179,3 +176,31 @@ This script demonstrates proper ML methodology for small datasets:
 - Biological interpretation of results
 
 The finding that multiple approaches work similarly is scientifically valuable - it reveals the multi-dimensional nature of the ALS cfDNA signal and the fundamental limits of small sample sizes.
+
+
+A NOTE ON REPRODUCIBILITY
+
+I set random seeds throughout (np.random.seed(), random.seed(), random_state in models) to make this reproducible. However, I've found that exact reproducibility isn't guaranteed even with seeds set. There are a few likely culprits:
+
+1. sklearn's cross_val_score has internal randomness that might not be fully controlled
+2. RandomForest can have some non-deterministic behavior depending on version
+3. Threading/parallelization (even with n_jobs=1) can introduce variance
+4. Different sklearn versions might use different random number generators
+5. Operating system differences in floating point operations
+
+What I should have done for perfect reproducibility:
+- Set PYTHONHASHSEED environment variable
+- Use RandomState objects instead of global random seeds
+- Disable all parallelization explicitly
+- Save the actual CV fold indices for reuse
+
+However, here's the important part: the 20-replicate approach with mean ± SD is actually MORE scientifically rigorous than single-run reproducibility. Why?
+
+If my code gives different results each run, that's telling me something important: performance varies with data splits. By running 20 times and reporting the distribution of results, I'm quantifying that variance honestly rather than hiding it behind a single "reproducible" number.
+
+Think about it:
+- Single run with seed=42: F1 = 0.81 (lucky split?)
+- Single run with seed=43: F1 = 0.73 (unlucky split?)
+- 20 runs averaged: F1 = 0.77 ± 0.03 (true expected performance)
+
+The third approach gives a more honest assessment. The fact that I CAN'T just cherry-pick one good seed is actually a feature, not a bug.
